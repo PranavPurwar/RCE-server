@@ -5,6 +5,7 @@ from waitress import serve
 
 app = Flask(__name__)
 
+# Fetch default system shell binary
 sys_shell = os.environ.get('SHELL')
 
 print('Starting shell: ' + sys_shell)
@@ -21,7 +22,7 @@ def exec():
             command = request.get_json()['command']
 
             # Use pexpect.run to execute the command
-            output = pexpect.run(command, timeout=10)  # Adjust timeout as needed
+            output = pexpect.run(command)
             
             return output.decode()
         except Exception as e:
