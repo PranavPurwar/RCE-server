@@ -2,6 +2,9 @@ import pexpect
 from flask import Flask, request
 import os
 from waitress import serve
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -18,6 +21,11 @@ shell.expect(r'%')  # Wait for the shell prompt
 def exec():
     if request.method == 'POST':
         try:
+            json = request.get_json()
+            if os.environ.get('password_protected'):
+                if 'pswd' in json and json.get('pswd') != os.environ.get('password'):
+                    return 'Wrong password!'.encode()
+
             command = request.get_json()['command']
 
             # Use pexpect.run to execute the command
@@ -27,7 +35,7 @@ def exec():
         except Exception as e:
             return str(e)
     else:
-        return "Send a POST request with a 'command' field."
+        return "Send a POST request with a 'command' field.".encode()
 
 is_first = True
 
@@ -55,6 +63,12 @@ def exec_command(cmd: str) -> str:
 @app.route('/', methods=['POST', 'GET'])
 def index():
     json = request.get_json()
+
+    json = request.get_json()
+    if os.environ.get('password_protected'):
+       if 'pswd' in json and json.get('pswd') != os.environ.get('password'):
+            return 'Wrong password!'.encode()
+
     if json == None:
         json = {
             'command': ''

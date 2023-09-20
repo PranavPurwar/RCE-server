@@ -12,10 +12,20 @@ Now for running the server
 python3 main.py
 ```
 
+Set a custom server password by editing the .env file
+
+```
+password=new-password
+```
+
+## Note
+If you decide to modify the password, edit the 'pswd' parameter to the new value while sending request.
+To disable password protection, set `password_protected` environment variable to False
+
 You can test the connection on the computer like this
 
 ```sh
-curl -X POST -H "Content-Type: application/json" -d '{"command":"ls"}' http://localhost:8888/
+curl -X POST -H "Content-Type: application/json" -d '{"command":"ls", "pswd":"sshIsAwesome"}' http://localhost:8888/
 ```
 
 At the start of the session, you might need to send the request twice before getting response back. This is a bug which I wasn't able to come up with a solution for.
@@ -26,7 +36,7 @@ It uses a single terminal session for running all the commands at `/`.
 For single-use, for example if you just need to delete a file, just do
 
 ```sh
-curl -X POST -H "Content-Type: application/json" -d '{"command":"rm requirements.txt"}' http://localhost:8888/execute
+curl -X POST -H "Content-Type: application/json" -d '{"command":"ls", "pswd":"sshIsAwesome"}' http://localhost:8888/execute
 ```
 
 To kill the shell, run
